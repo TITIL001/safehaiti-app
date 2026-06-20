@@ -1,132 +1,69 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeHaiti Map</title>
-    <!-- Chargement de Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        html, body, #map {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #111111;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="map"></div>
-
-    <!-- Chargement de Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // 1. Données GeoJSON de tes 8 communes (coordonnées officielles optimisées)
-        const communesGeoJSON = {
-          "type": "FeatureCollection",
-          "features": [
-            {
-              "type": "Feature",
-              "properties": { "name": "Delmas", "status": "Calme relatif" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-72.315, 18.555], [-72.290, 18.560], [-72.285, 18.540], [-72.310, 18.530], [-72.315, 18.555]]]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": { "name": "Cité Soleil", "status": "Danger confirmé" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-72.340, 18.585], [-72.310, 18.590], [-72.305, 18.565], [-72.330, 18.560], [-72.340, 18.585]]]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": { "name": "Tabarre", "status": "Alerte de base" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-72.285, 18.580], [-72.245, 18.585], [-72.240, 18.550], [-72.275, 18.545], [-72.285, 18.580]]]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": { "name": "Croix-des-Bouquets", "status": "Danger confirmé" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-72.245, 18.590], [-72.150, 18.600], [-72.140, 18.510], [-72.230, 18.520], [-72.245, 18.590]]]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": { "name": "Pétion-Ville", "status": "Calme relatif" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-72.300, 18.525], [-72.260, 18.520], [-72.250, 18.470], [-72.295, 18.475], [-72.300, 18.525]]]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": { "name": "Port-au-Prince", "status": "Alerte de base" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-72.355, 18.545], [-72.315, 18.550], [-72.305, 18.525], [-72.345, 18.515], [-72.355, 18.545]]]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": { "name": "Carrefour", "status": "Calme relatif" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-72.430, 18.530], [-72.355, 18.535], [-72.340, 18.460], [-72.415, 18.455], [-72.430, 18.530]]]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": { "name": "Ganthier", "status": "Alerte de base" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-72.140, 18.580], [-72.000, 18.590], [-71.990, 18.480], [-72.135, 18.475], [-72.140, 18.580]]]
-              }
-            }
-          ]
-        };
-
-        // 2. Initialisation et effet Zoom fluide automatique au centre de PAP
-        const map = L.map('map').setView([18.542, -72.285], 11.5); 
-
-        // 3. Fond de carte sombre (style CARTO Dark Matter)
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
-
-        // 4. Attribution automatique des couleurs selon le statut
-        function getZoneColor(status) {
-            switch (status) {
-                case 'Danger confirmé': return '#ef4444'; // Rouge
-                case 'Alerte de base':  return '#f59e0b'; // Orange
-                case 'Calme relatif':    return '#10b981'; // Vert
-                default:                 return '#9ca3af'; // Gris
-            }
-        }
-
-        // 5. Rendu des polygones sur la carte
-        L.geoJSON(communesGeoJSON, {
-            style: function(feature) {
-                return {
-                    fillColor: getZoneColor(feature.properties.status),
-                    weight: 2,
-                    opacity: 1,
-                    color: '#ffffff', // Lignes de séparation blanches et nettes
-                    fillOpacity: 0.4
-                };
-            },
-            onEachFeature: function(feature, layer) {
-                layer.bindPopup(`<b>${feature.properties.name}</b><br>Statut : ${feature.properties.status}`);
-            }
-        }).addTo(map);
-    </script>
-</body>
-</html>
+const communesGeoJSON = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Delmas", "status": "Calme relatif" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-72.315, 18.555], [-72.290, 18.560], [-72.285, 18.540], [-72.310, 18.530], [-72.315, 18.555]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Cité Soleil", "status": "Danger confirmé" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-72.340, 18.585], [-72.310, 18.590], [-72.305, 18.565], [-72.330, 18.560], [-72.340, 18.585]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Tabarre", "status": "Alerte de base" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-72.285, 18.580], [-72.245, 18.585], [-72.240, 18.550], [-72.275, 18.545], [-72.285, 18.580]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Croix-des-Bouquets", "status": "Danger confirmé" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-72.245, 18.590], [-72.150, 18.600], [-72.140, 18.510], [-72.230, 18.520], [-72.245, 18.590]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Pétion-Ville", "status": "Calme relatif" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-72.300, 18.525], [-72.260, 18.520], [-72.250, 18.470], [-72.295, 18.475], [-72.300, 18.525]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Port-au-Prince", "status": "Alerte de base" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-72.355, 18.545], [-72.315, 18.550], [-72.305, 18.525], [-72.345, 18.515], [-72.355, 18.545]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Carrefour", "status": "Calme relatif" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-72.430, 18.530], [-72.355, 18.535], [-72.340, 18.460], [-72.415, 18.455], [-72.430, 18.530]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Ganthier", "status": "Alerte de base" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-72.140, 18.580], [-72.000, 18.590], [-71.990, 18.480], [-72.135, 18.475], [-72.140, 18.580]]]
+      }
+    }
+  ]
+};
