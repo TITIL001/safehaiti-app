@@ -1,69 +1,48 @@
-const communesGeoJSON = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": { "name": "Delmas", "status": "Calme relatif" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-72.3194, 18.5361], [-72.3111, 18.5528], [-72.2944, 18.5639], [-72.2833, 18.5556], [-72.2861, 18.5333], [-72.3028, 18.5250], [-72.3194, 18.5361]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Cité Soleil", "status": "Danger confirmed" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-72.3444, 18.5694], [-72.3333, 18.5944], [-72.2944, 18.6028], [-72.2917, 18.5639], [-72.3111, 18.5528], [-72.3194, 18.5361], [-72.3444, 18.5694]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Tabarre", "status": "Alerte de base" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-72.2917, 18.5639], [-72.2944, 18.6028], [-72.2417, 18.5944], [-72.2389, 18.5583], [-72.2611, 18.5444], [-72.2833, 18.5556], [-72.2917, 18.5639]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Croix-des-Bouquets", "status": "Danger confirmed" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-72.2417, 18.5944], [-72.1139, 18.6139], [-72.1028, 18.4944], [-72.2222, 18.5111], [-72.2389, 18.5583], [-72.2417, 18.5944]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Pétion-Ville", "status": "Calme relatif" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-72.3028, 18.5250], [-72.2861, 18.5333], [-72.2611, 18.5444], [-72.2222, 18.5111], [-72.2333, 18.4611], [-72.2889, 18.4694], [-72.3028, 18.5250]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Port-au-Prince", "status": "Alerte de base" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-72.3528, 18.5500], [-72.3194, 18.5361], [-72.3028, 18.5250], [-72.3278, 18.5028], [-72.3500, 18.5167], [-72.3528, 18.5500]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Carrefour", "status": "Calme relatif" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-72.4361, 18.5333], [-72.3528, 18.5500], [-72.3500, 18.5167], [-72.3278, 18.5028], [-72.3389, 18.4389], [-72.4222, 18.4444], [-72.4361, 18.5333]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Ganthier", "status": "Alerte de base" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-72.1139, 18.6139], [-71.9667, 18.6250], [-71.9528, 18.4722], [-72.1028, 18.4944], [-72.1139, 18.6139]]]
-      }
+<!-- ... Reste de ton code HTML au-dessus ... -->
+
+<script>
+  // 1. TU METS LE PREMIER CODE ICI (Les données des frontières)
+  const communesGeoJSON = {
+    "type": "FeatureCollection",
+    "features": [
+      // ... toutes les coordonnées que je t'ai données ...
+    ]
+  };
+
+  // 2. TU METS LE DEUXIÈME CODE JUSTE EN DESSOUS (La configuration Leaflet)
+  // Initialisation de la carte
+  const map = L.map('map').setView([18.5392, -72.335], 12); 
+
+  // Fond de carte sombre
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+  }).addTo(map);
+
+  // Fonction de couleur
+  function getZoneColor(status) {
+    switch (status) {
+      case 'Danger confirmé': return '#ef4444';
+      case 'Alerte de base':  return '#f59e0b';
+      case 'Calme relatif':    return '#10b981';
+      default:                 return '#9ca3af';
     }
-  ]
-};                                                                                                                                                                                                                                      
+  }
+
+  // Affichage du GeoJSON sur la carte
+  L.geoJSON(communesGeoJSON, {
+    style: function(feature) {
+      return {
+        fillColor: getZoneColor(feature.properties.status),
+        weight: 1.5,
+        opacity: 0.8,
+        color: '#ffffff',
+        fillOpacity: 0.5
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup(`<b>${feature.properties.name}</b><br>Statut : ${feature.properties.status}`);
+    }
+  }).addTo(map);
+</script>
+
+<!-- ... Reste de ton code HTML en dessous ... -->
