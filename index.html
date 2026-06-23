@@ -35,8 +35,8 @@
             <span>Tracé Officiel OSM (Rouge)</span>
         </div>
         <div class="legend-item">
-            <div class="color-box" style="background: rgba(0, 255, 153, 0.2); border: 2px solid #00ff99;"></div>
-            <span>Ton Tracé de Validation (Vert)</span>
+            <div class="color-box" style="background: transparent; border: 2px solid #00ff99;"></div>
+            <span>Ton Tracé de Validation (Ligne Verte)</span>
         </div>
 
         <button onclick="clearLastPoint()">Annuler dernier point</button>
@@ -48,7 +48,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // Coordonnées de base (Centre de Croix-des-Bouquets)
         const map = L.map('map').setView([18.59, -72.23], 12);
 
         // Fond de carte Sombre
@@ -75,7 +74,7 @@
             [18.66885, -72.3018],   [18.67096, -72.30815],  [18.67381, -72.31287], [18.67592, -72.31716],
             [18.6795, -72.32051],   [18.68197, -72.32608]
         ];
-        L.polygon(anciennesCoords, { color: 'orange', fillColor: 'orange', fillOpacity: 0.15, weight: 2 }).addTo(map);
+        L.polygon(anciennesCoords, { color: 'orange', fillColor: 'orange', fillOpacity: 0.1, weight: 2 }).addTo(map);
 
         // 🔴 DONNÉES OFFICIELLES (Rouge de référence OSM)
         const officiellesCoords = [
@@ -90,9 +89,9 @@
         ];
         L.polyline(officiellesCoords, { color: '#ff3333', weight: 2, dashArray: '5, 5' }).addTo(map);
 
-        // 🟢 GESTION DU TRACÉ INTERACTIF (Vert)
+        // 🟢 GESTION DU TRACÉ INTERACTIF (Ligne simple et non polygone fermé)
         let activePoints = [];
-        let greenPolygon = L.polygon([], { color: '#00ff99', fillColor: '#00ff99', fillOpacity: 0.25, weight: 3 }).addTo(map);
+        let greenLine = L.polyline([], { color: '#00ff99', weight: 3 }).addTo(map);
         let markers = [];
 
         map.on('click', function(e) {
@@ -101,7 +100,7 @@
             
             activePoints.push([lat, lng]);
             
-            // Ajouter un petit marqueur pour voir le point cliqué
+            // Petit point visuel sur le clic
             let marker = L.circleMarker([lat, lng], { radius: 4, color: '#00ff99', fillColor: '#fff', fillOpacity: 1 }).addTo(map);
             markers.push(marker);
 
@@ -109,9 +108,8 @@
         });
 
         function updateMapAndText() {
-            greenPolygon.setLatLngs(activePoints);
+            greenLine.setLatLngs(activePoints);
             
-            // Formatage de la sortie JSON propre
             let formattedText = "[\n";
             activePoints.forEach((p, idx) => {
                 formattedText += `  [${p[0]}, ${p[1]}]${idx < activePoints.length - 1 ? ',' : ''}\n`;
