@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeHaiti Studio - Croix-des-Bouquets</title>
-    
+    <title>SafeHaiti Studio - Cité Soleil</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <style>
-        body { margin: 0; padding: 0; background-color: #111; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        body { margin: 0; padding: 0; background-color: #111; font-family: 'Segoe UI', sans-serif; color: #fff; display: flex; height: 100vh; overflow: hidden; }
         #map { flex: 1; height: 100%; }
         #sidebar { width: 350px; background: #1a1a1a; padding: 20px; display: flex; flex-direction: column; box-shadow: -2px 0 10px rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; }
-        h2 { font-size: 1.2rem; color: #00ff99; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        h2 { font-size: 1.2rem; color: #00ff99; margin-top: 0; text-transform: uppercase; }
         .legend-item { margin: 10px 0; display: flex; align-items: center; font-size: 0.9rem; }
         .color-box { width: 20px; height: 12px; margin-right: 10px; border-radius: 2px; }
         textarea { width: 100%; height: 250px; background: #2b2b2b; color: #00ff99; border: 1px solid #444; border-radius: 4px; padding: 10px; font-family: monospace; font-size: 0.8rem; resize: none; margin-top: 15px; }
-        button { background: #ff3366; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
-        button:hover { background: #ff5588; }
+        button { background: #ff3366; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -24,72 +21,88 @@
     <div id="map"></div>
 
     <div id="sidebar">
-        <h2>Studio : Croix-des-Bouquets</h2>
+        <h2>Studio : Cité Soleil</h2>
         
         <div class="legend-item">
-            <div class="color-box" style="background: rgba(255, 165, 0, 0.4); border: 2px solid orange;"></div>
-            <span>Anciennes coordonnées (Orange Pâle)</span>
+            <div class="color-box" style="background: rgba(30, 58, 138, 0.4); border: 2px solid #1E3A8A;"></div>
+            <span>Croix-des-Bouquets (DÉFINITIF 🔵)</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box" style="background: rgba(255, 165, 0, 0.2); border: 2px solid orange;"></div>
+            <span>Ancien Cité Soleil (Orange Pâle 🟠)</span>
         </div>
         <div class="legend-item">
             <div class="color-box" style="background: transparent; border: 2px dashed #ff3333;"></div>
-            <span>Tracé Officiel OSM (Rouge)</span>
+            <span>Officiel OSM Cité Soleil (Rouge 🔴)</span>
         </div>
         <div class="legend-item">
             <div class="color-box" style="background: transparent; border: 2px solid #00ff99;"></div>
-            <span>Ton Tracé de Validation (Ligne Verte)</span>
+            <span>Ton Nouveau Tracé (Vert 🟢)</span>
         </div>
 
         <button onclick="clearLastPoint()">Annuler dernier point</button>
         <button onclick="clearAll()" style="background: #444;">Réinitialiser Tout</button>
 
-        <textarea id="output" placeholder="Tes coordonnées vertes s'afficheront ici en temps réel..." readonly></textarea>
+        <textarea id="output" placeholder="Tes coordonnées vertes s'afficheront ici..." readonly></textarea>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script>
-        const map = L.map('map').setView([18.59, -72.23], 12);
+        const map = L.map('map').setView([18.62, -72.33], 13);
 
-        // Fond de carte Sombre
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        // 🟠 DONNÉES ANCIENNES (Orange Pâle)
-        const anciennesCoords = [
-            [18.68203, -72.32609], [18.68796, -72.32497], [18.69064, -72.32162], [18.69227, -72.31879],
-            [18.69316, -72.31622], [18.69154, -72.31339], [18.690, -72.31081],  [18.68894, -72.30669],
-            [18.69122, -72.29673], [18.68464, -72.29382], [18.69911, -72.22876], [18.70123, -72.21622],
-            [18.6905, -72.19666],  [18.66369, -72.17915], [18.63443, -72.17417], [18.61573, -72.15443],
-            [18.60955, -72.12782],  [18.58663, -72.13898], [18.57655, -72.12164], [18.56324, -72.13846],
-            [18.55307, -72.14387],  [18.51957, -72.15202], [18.49455, -72.1946],  [18.53359, -72.21554],
-            [18.54401, -72.22378],  [18.5539, -72.22867],  [18.57, -72.23082],    [18.56626, -72.23545],
-            [18.57309, -72.2412],   [18.57766, -72.24266],  [18.57921, -72.24478], [18.58088, -72.24811],
-            [18.5811, -72.24863],   [18.58285, -72.24848],  [18.5848, -72.24764],  [18.58484, -72.24702],
-            [18.58224, -72.242],    [18.58204, -72.23854],  [18.57893, -72.23421], [18.57653, -72.23073],
-            [18.58472, -72.22708],  [18.59063, -72.22618],  [18.59522, -72.22468], [18.59998, -72.22343],
-            [18.60416, -72.22142],  [18.61388, -72.21661],  [18.62469, -72.2303],  [18.63502, -72.25296],
-            [18.64799, -72.25901],  [18.64746, -72.26395],  [18.64575, -72.2706],  [18.64384, -72.27502],
-            [18.64976, -72.28283],  [18.65634, -72.28669],  [18.65918, -72.29073], [18.66475, -72.29699],
-            [18.66885, -72.3018],   [18.67096, -72.30815],  [18.67381, -72.31287], [18.67592, -72.31716],
-            [18.6795, -72.32051],   [18.68197, -72.32608]
+        // 🔵 1. CROIX-DES-BOUQUETS (DÉFINITIF)
+        const croixDefinitif = [
+            [18.68333, -72.32574], [18.69373, -72.31613], [18.69178, -72.3024], [18.7295, -72.2945],
+            [18.71812, -72.23133], [18.70544, -72.19906], [18.66544, -72.17709], [18.63551, -72.17297],
+            [18.61762, -72.15374], [18.59744, -72.1225], [18.5841, -72.13005], [18.57629, -72.12147],
+            [18.56327, -72.13211], [18.5343, -72.14893], [18.519, -72.15185], [18.49019, -72.19477],
+            [18.5291, -72.22034], [18.54993, -72.22635], [18.56913, -72.23099], [18.56669, -72.23494],
+            [18.57483, -72.24197], [18.57922, -72.24609], [18.58199, -72.24833], [18.58557, -72.24747],
+            [18.58378, -72.24146], [18.57727, -72.23116], [18.58504, -72.22713], [18.60025, -72.22352],
+            [18.60322, -72.2221], [18.61875, -72.22142], [18.63209, -72.24974], [18.64633, -72.2612],
+            [18.64193, -72.27339], [18.65478, -72.28699], [18.66141, -72.293], [18.66857, -72.30648],
+            [18.67731, -72.32144], [18.67926, -72.32173], [18.68036, -72.32274], [18.68052, -72.32356],
+            [18.68112, -72.32461], [18.68179, -72.32481], [18.68195, -72.32508], [18.68203, -72.32609],
+            [18.68336, -72.32574]
         ];
-        L.polygon(anciennesCoords, { color: 'orange', fillColor: 'orange', fillOpacity: 0.1, weight: 2 }).addTo(map);
+        L.polygon(croixDefinitif, { color: '#1E3A8A', fillColor: '#1E3A8A', fillOpacity: 0.2, weight: 3 }).addTo(map);
 
-        // 🔴 DONNÉES OFFICIELLES (Rouge de référence OSM)
-        const officiellesCoords = [
-            [18.7303, -72.2952], [18.7185, -72.2341], [18.7058, -72.1985], [18.6642, -72.1764],
-            [18.6289, -72.1711], [18.6145, -72.1482], [18.5992, -72.1224], [18.5721, -72.1354],
-            [18.5584, -72.1321], [18.5321, -72.1489], [18.4895, -72.1952], [18.5284, -72.2198],
-            [18.5512, -72.2264], [18.5684, -72.2291], [18.5715, -72.2402], [18.5798, -72.2471],
-            [18.5852, -72.2465], [18.5812, -72.2361], [18.5742, -72.2284], [18.5921, -72.2251],
-            [18.6015, -72.2221], [18.6184, -72.2212], [18.6321, -72.2498], [18.6465, -72.2612],
-            [18.6421, -72.2734], [18.6521, -72.2845], [18.6612, -72.2931], [18.6712, -72.3112],
-            [18.6784, -72.3234], [18.6852, -72.3258], [18.6924, -72.3142], [18.6901, -72.3021], [18.7303, -72.2952]
+        // 🟠 2. ANCIENNES COORDONNÉES CITÉ SOLEIL (Orange Pâle)
+        const ancienCiteSoleil = [
+            [18.67873, -72.32094], [18.66475, -72.31665], [18.65841, -72.31802], [18.65256, -72.33038],
+            [18.64541, -72.3369],  [18.62671, -72.34737], [18.62834, -72.35767], [18.62054, -72.35064],
+            [18.61501, -72.35064],  [18.60119, -72.34583], [18.58151, -72.34102], [18.57321, -72.34935],
+            [18.5689, -72.3527],    [18.56605, -72.35312], [18.56434, -72.353],   [18.56482, -72.34847],
+            [18.56295, -72.34109],  [18.56584, -72.3369],  [18.56609, -72.33295], [18.5669, -72.32665],
+            [18.56694, -72.32356],  [18.56503, -72.31768], [18.56442, -72.31489], [18.56633, -72.31274],
+            [18.5741, -72.30515],   [18.58019, -72.31197], [18.5808, -72.31154],  [18.58422, -72.30201],
+            [18.58808, -72.29442],  [18.5928, -72.28978],  [18.5954, -72.28588],  [18.59764, -72.28515],
+            [18.59699, -72.28935],  [18.59788, -72.29034], [18.59884, -72.29394], [18.59913, -72.29562],
+            [18.59913, -72.29794],  [18.59962, -72.30291], [18.6032, -72.30444],  [18.60543, -72.3057],
+            [18.60578, -72.30826],  [18.60511, -72.31092], [18.6045, -72.31287],  [18.60468, -72.31454],
+            [18.60635, -72.31637],  [18.60765, -72.31639], [18.60923, -72.31575], [18.60931, -72.31956],
+            [18.61167, -72.32454],  [18.61777, -72.32849], [18.63362, -72.32609], [18.66458, -72.30995],
+            [18.67897, -72.32102]
         ];
-        L.polyline(officiellesCoords, { color: '#ff3333', weight: 2, dashArray: '5, 5' }).addTo(map);
+        L.polygon(ancienCiteSoleil, { color: 'orange', fillColor: 'orange', fillOpacity: 0.08, weight: 2 }).addTo(map);
 
-        // 🟢 GESTION DU TRACÉ INTERACTIF (Ligne simple et non polygone fermé)
+        // 🔴 3. LIMITES OFFICIELLES CITÉ SOLEIL (OSM Reference)
+        const officielOSMCiteSoleil = [
+            [18.6788, -72.3210], [18.6650, -72.3165], [18.6552, -72.3198], [18.6445, -72.3385],
+            [18.6250, -72.3480], [18.6275, -72.3585], [18.6190, -72.3510], [18.6005, -72.3460],
+            [18.5800, -72.3415], [18.5680, -72.3535], [18.5640, -72.3530], [18.5625, -72.3405],
+            [18.5665, -72.3230], [18.5640, -72.3140], [18.5745, -72.3050], [18.5810, -72.3120],
+            [18.5885, -72.2940], [18.5955, -72.2855], [18.5995, -72.3030], [18.6055, -72.3055],
+            [18.6045, -72.3130], [18.6095, -72.3195], [18.6175, -72.3285], [18.6335, -72.3260],
+            [18.6645, -72.3100], [18.6788, -72.3210]
+        ];
+        L.polyline(officielOSMCiteSoleil, { color: '#ff3333', weight: 2, dashArray: '5, 5' }).addTo(map);
+
+        // 🟢 4. TRACÉ INTERACTIF (Ligne continue)
         let activePoints = [];
         let greenLine = L.polyline([], { color: '#00ff99', weight: 3 }).addTo(map);
         let markers = [];
@@ -97,25 +110,20 @@
         map.on('click', function(e) {
             const lat = parseFloat(e.latlng.lat.toFixed(5));
             const lng = parseFloat(e.latlng.lng.toFixed(5));
-            
             activePoints.push([lat, lng]);
             
-            // Petit point visuel sur le clic
             let marker = L.circleMarker([lat, lng], { radius: 4, color: '#00ff99', fillColor: '#fff', fillOpacity: 1 }).addTo(map);
             markers.push(marker);
-
             updateMapAndText();
         });
 
         function updateMapAndText() {
             greenLine.setLatLngs(activePoints);
-            
             let formattedText = "[\n";
             activePoints.forEach((p, idx) => {
                 formattedText += `  [${p[0]}, ${p[1]}]${idx < activePoints.length - 1 ? ',' : ''}\n`;
             });
             formattedText += "]";
-            
             document.getElementById('output').value = formattedText;
         }
 
