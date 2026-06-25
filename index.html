@@ -12,7 +12,7 @@
         h2 { font-size: 1.2rem; color: #00ff99; margin-top: 0; text-transform: uppercase; }
         .legend-item { margin: 10px 0; display: flex; align-items: center; font-size: 0.9rem; }
         .color-box { width: 20px; height: 12px; margin-right: 10px; border-radius: 2px; }
-        textarea { width: 100%; height: 250px; background: #2b2b2b; color: #00ff99; border: 1px solid #444; border-radius: 4px; padding: 10px; font-family: monospace; font-size: 0.8rem; resize: none; margin-top: 15px; }
+        textarea { width: 100%; height: 220px; background: #2b2b2b; color: #ff3366; border: 1px solid #444; border-radius: 4px; padding: 10px; font-family: monospace; font-size: 0.8rem; resize: none; margin-top: 15px; }
         button { background: #ff3366; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
@@ -26,36 +26,36 @@
         
         <div class="legend-item">
             <div class="color-box" style="background: rgba(30, 58, 138, 0.4); border: 2px solid #1E3A8A;"></div>
-            <span>Croix-des-Bouquets (DÉFINITIF 🔵)</span>
+            <span>Croix-des-Bouquets (🔵 DÉFINITIF)</span>
         </div>
         <div class="legend-item">
-            <div class="color-box" style="background: rgba(0, 255, 255, 0.4); border: 2px solid #00FFFF;"></div>
-            <span>Cité Soleil (DÉFINITIF 🌐)</span>
+            <div class="color-box" style="background: rgba(0, 255, 255, 0.2); border: 2px solid #00FFFF;"></div>
+            <span>Cité Soleil (🌐 INTÉGRÉ)</span>
         </div>
         <div class="legend-item">
-            <div class="color-box" style="background: rgba(255, 140, 0, 0.3); border: 2px solid #FF8C00;"></div>
-            <span>Tabarre (DÉFINITIF 🟠)</span>
+            <div class="color-box" style="background: rgba(255, 140, 0, 0.2); border: 2px solid #FF8C00;"></div>
+            <span>Tabarre (🟠 DÉFINITIF)</span>
         </div>
         <div class="legend-item">
-            <div class="color-box" style="background: transparent; border: 2px solid #00ff99;"></div>
-            <span>Tracé Delmas / Orgs (Vert 🟢)</span>
+            <div class="color-box" style="background: transparent; border: 2px solid #ff3366;"></div>
+            <span>Delmas / Orgs (🔴 TRACÉ EN COURS)</span>
         </div>
 
         <button onclick="clearLastPoint()">Annuler dernier point</button>
-        <button onclick="clearAll()" style="background: #444;">Réinitialiser Tout</button>
+        <button onclick="clearAll()" style="background: #444;">Effacer le tracé actuel</button>
 
-        <textarea id="output" placeholder="Clique sur la carte pour tracer Delmas. Les coordonnées vertes s'afficheront ici..." readonly></textarea>
+        <textarea id="output" placeholder="Clique sur la carte pour récolter les coordonnées de Delmas..." readonly></textarea>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        const map = L.map('map').setView([18.59, -72.31], 12);
+        const map = L.map('map').setView([18.585, -72.29], 13);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // 🔵 1. CROIX-DES-BOUQUETS (DÉFINITIF)
+        // 🔵 1. CROIX-DES-BOUQUETS
         const croixDefinitif = [
             [18.68333, -72.32574], [18.69373, -72.31613], [18.69178, -72.3024], [18.7295, -72.2945],
             [18.71812, -72.23133], [18.70544, -72.19906], [18.66544, -72.17709], [18.63551, -72.17297],
@@ -66,46 +66,40 @@
             [18.58378, -72.24146], [18.57727, -72.23116], [18.58504, -72.22713], [18.60025, -72.22352],
             [18.60322, -72.2221], [18.61875, -72.22142], [18.63209, -72.24974], [18.64633, -72.2612],
             [18.64193, -72.27339], [18.65478, -72.28699], [18.66141, -72.293], [18.66857, -72.30648],
-            [18.67731, -72.32144], [18.67926, -72.32173], [18.68036, -72.32274], [18.68052, -72.32356],
-            [18.68112, -72.32461], [18.68179, -72.32481], [18.68195, -72.32508], [18.68203, -72.32609],
-            [18.68336, -72.32574]
+            [18.67731, -72.32144], [18.68333, -72.32574]
         ];
         L.polygon(croixDefinitif, { color: '#1E3A8A', fillColor: '#1E3A8A', fillOpacity: 0.15, weight: 2 }).addTo(map);
 
-        // 🌐 2. CITÉ SOLEIL (DÉFINITIF)
+        // 🌐 2. CITÉ SOLEIL
         const soleilDefinitif = [
-            [18.67707, -72.32162], [18.67677, -72.32355], [18.67666, -72.32486], [18.67658, -72.3255],
-            [18.67647, -72.32577], [18.67633, -72.32572], [18.67624, -72.32551], [18.67638, -72.32519],
-            [18.67642, -72.32459], [18.67617, -72.32414], [18.67619, -72.32401], [18.67629, -72.32415],
-            [18.67641, -72.3241],  [18.67673, -72.31197], [18.67676, -72.32179], [18.67623, -72.3214],
-            [18.67626, -72.32107], [18.67625, -72.32089], [18.67625, -72.3207],  [18.67611, -72.32049],
-            [18.67589, -72.32031], [18.67561, -72.32024], [18.67554, -72.32033], [18.67554, -72.32037],
-            [18.57418, -72.30523], [18.58016, -72.31175], [18.58125, -72.31154], [18.58394, -72.30193],
-            [18.58792, -72.29446], [18.59264, -72.28978], [18.59517, -72.28601], [18.59769, -72.28532],
-            [18.59716, -72.28922], [18.59826, -72.29043], [18.59923, -72.29562], [18.59915, -72.29811],
-            [18.59984, -72.30296], [18.60541, -72.30557], [18.60598, -72.30815], [18.60476, -72.31223],
-            [18.60472, -72.31463], [18.60631, -72.31635], [18.60794, -72.31647], [18.60936, -72.31583],
-            [18.60944, -72.31939], [18.61176, -72.32459], [18.61766, -72.32832], [18.63364, -72.32613],
-            [18.66483, -72.31012], [18.67544, -72.31819], [18.67727, -72.32171]
+            [18.63364, -72.32613], [18.66483, -72.31012], [18.67544, -72.31819], [18.67727, -72.32171],
+            [18.65709, -72.32161], [18.65543, -72.32626], [18.65288, -72.33142], [18.64817, -72.33564],
+            [18.64114, -72.33932], [18.63244, -72.34351], [18.62685, -72.34804], [18.62449, -72.35602],
+            [18.61509, -72.3516],  [18.60989, -72.34628], [18.60129, -72.34652], [18.59394, -72.33862],
+            [18.58634, -72.34008], [18.57814, -72.34439], [18.5731, -72.34707],  [18.56462, -72.35319],
+            [18.56289, -72.34119], [18.56639, -72.33298], [18.56488, -72.31755], [18.57418, -72.30523],
+            [18.58394, -72.30193], [18.59264, -72.28978], [18.59769, -72.28532], [18.59923, -72.29562],
+            [18.60541, -72.30557], [18.60472, -72.31463], [18.60936, -72.31583], [18.61766, -72.32832],
+            [18.63364, -72.32613]
         ];
-        L.polygon(soleilDefinitif, { color: '#00FFFF', fillColor: '#00FFFF', fillOpacity: 0.15, weight: 2 }).addTo(map);
+        L.polygon(soleilDefinitif, { color: '#00FFFF', fillColor: '#00FFFF', fillOpacity: 0.12, weight: 2 }).addTo(map);
 
-        // 🟠 3. TABARRE (DÉFINITIF)
+        // 🟠 3. TABARRE
         const tabarreDefinitif = [
-            [18.57426, -72.3053], [18.57464, -72.30334], [18.57401, -72.30085], [18.57354, -72.29929],
-            [18.57302, -72.29714], [18.57253, -72.29515], [18.57232, -72.29347], [18.57212, -72.2924],
-            [18.57141, -72.29143], [18.57062, -72.29036], [18.5706, -72.28871], [18.57047, -72.28695],
-            [18.5702, -72.28617], [18.56982, -72.28564], [18.56905, -72.28481], [18.56803, -72.28397],
-            [18.56724, -72.2833], [18.56683, -72.28286], [18.5661, -72.28209], [18.56576, -72.28178],
-            [18.56529, -72.28139], [18.56504, -72.28114], [18.56439, -72.28046], [18.56342, -72.27882],
-            [18.5629, -72.27737], [18.56275, -72.27671], [18.56278, -72.27566], [18.56291, -72.27473],
-            [18.57438, -72.30532]
+            [18.64799, -72.25901], [18.64575, -72.2706],  [18.64976, -72.28283], [18.65918, -72.29073],
+            [18.66885, -72.3018],  [18.67381, -72.31287], [18.6795, -72.32051],  [18.66458, -72.30995],
+            [18.63362, -72.32609], [18.61777, -72.32849], [18.61167, -72.32454], [18.60931, -72.31956],
+            [18.60635, -72.31637], [18.6045, -72.31287],  [18.60578, -72.30826], [18.59962, -72.30291],
+            [18.59884, -72.29394], [18.59764, -72.28515], [18.58808, -72.29442], [18.58019, -72.31197],
+            [18.56633, -72.31274], [18.56503, -72.31768], [18.56694, -72.32356], [18.56584, -72.3369],
+            [18.56482, -72.34847], [18.5689, -72.3527],   [18.58151, -72.34102], [18.61501, -72.35064],
+            [18.62671, -72.34737], [18.65256, -72.33038], [18.67873, -72.32094], [18.64799, -72.25901]
         ];
-        L.polygon(tabarreDefinitif, { color: '#FF8C00', fillColor: '#FF8C00', fillOpacity: 0.15, weight: 2 }).addTo(map);
+        L.polygon(tabarreDefinitif, { color: '#FF8C00', fillColor: '#FF8C00', fillOpacity: 0.12, weight: 2 }).addTo(map);
 
-        // 🟢 4. TRACÉ INTERACTIF DELMAS (Ligne continue Verte)
+        // 🔴 4. STUDIO DE TRACÉ INTERACTIF (Delmas / Organisations)
         let activePoints = [];
-        let greenLine = L.polyline([], { color: '#00ff99', weight: 3 }).addTo(map);
+        let redLine = L.polyline([], { color: '#ff3366', weight: 3 }).addTo(map);
         let markers = [];
 
         map.on('click', function(e) {
@@ -113,13 +107,13 @@
             const lng = parseFloat(e.latlng.lng.toFixed(5));
             activePoints.push([lat, lng]);
             
-            let marker = L.circleMarker([lat, lng], { radius: 4, color: '#00ff99', fillColor: '#fff', fillOpacity: 1 }).addTo(map);
+            let marker = L.circleMarker([lat, lng], { radius: 5, color: '#ff3366', fillColor: '#fff', fillOpacity: 1 }).addTo(map);
             markers.push(marker);
             updateMapAndText();
         });
 
         function updateMapAndText() {
-            greenLine.setLatLngs(activePoints);
+            redLine.setLatLngs(activePoints);
             let formattedText = "[\n";
             activePoints.forEach((p, idx) => {
                 formattedText += `  [${p[0]}, ${p[1]}]${idx < activePoints.length - 1 ? ',' : ''}\n`;
