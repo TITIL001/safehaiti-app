@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { margin: 0; padding: 0; background-color: #111; font-family: 'Segoe UI', sans-serif; color: #fff; display: flex; height: 100vh; overflow: hidden; }
-        #map { flex: 1; height: 100%; }
+        #map { flex: 1; height: 100%; background: #111; }
         #sidebar { width: 350px; background: #1a1a1a; padding: 20px; display: flex; flex-direction: column; box-shadow: -2px 0 10px rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; }
         h2 { font-size: 1.2rem; color: #00ff99; margin-top: 0; text-transform: uppercase; }
         .legend-item { margin: 10px 0; display: flex; align-items: center; font-size: 0.9rem; }
@@ -36,19 +36,21 @@
         </div>
         <div class="legend-item">
             <div class="color-box" style="background: rgba(255, 0, 0, 0.3); border: 2px solid #FF0000;"></div>
-            <span>Delmas (🔴 EN COURS DE TRACÉ)</span>
+            <span>Delmas (🔴 EN COURS)</span>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        const map = L.map('map').setView([18.58, -72.29], 12);
+        // Initialisation de la carte
+        const map = L.map('map').setView([18.59, -72.29], 12);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap'
+        // Fond de carte Dark Matter
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // 🔵 1. CROIX-DES-BOUQUETS (DÉFINITIF)
+        // 🔵 1. CROIX-DES-BOUQUETS
         const croixDefinitif = [
             [18.68333, -72.32574], [18.69373, -72.31613], [18.69178, -72.3024], [18.7295, -72.2945],
             [18.71812, -72.23133], [18.70544, -72.19906], [18.66544, -72.17709], [18.63551, -72.17297],
@@ -65,18 +67,20 @@
         ];
         L.polygon(croixDefinitif, { color: '#1E3A8A', fillColor: '#1E3A8A', fillOpacity: 0.15, weight: 2 }).addTo(map);
 
-        // 🌐 2. CITÉ SOLEIL (CORRIGÉ - NETTOYÉ DES LIGNES PARASITES)
+        // 🌐 2. CITÉ SOLEIL (CORRIGÉ ET RESTRUCTURÉ)
         const soleilDefinitif = [
-            [18.60493, -72.31484], [18.59996, -72.30296], [18.59905, -72.34604], [18.56494, -72.34935], 
-            [18.56476, -72.3484],  [18.56366, -72.34855], [18.56289, -72.34119], [18.566, -72.3369],    
-            [18.56639, -72.33298], [18.567, -72.32356],   [18.56488, -72.31755], [18.56435, -72.31478], 
-            [18.57418, -72.30523], [18.58016, -72.31175], [18.58125, -72.31154], [18.58394, -72.30193], 
-            [18.58792, -72.29446], [18.59264, -72.28978], [18.59517, -72.28601], [18.59769, -72.28532], 
-            [18.59716, -72.29222], [18.59826, -72.29043], [18.59923, -72.29562], [18.59915, -72.29811]
+            [18.60493, -72.31484], [18.59996, -72.30296], [18.59905, -72.34604],
+            [18.56476, -72.3484],  [18.56366, -72.34855], [18.56289, -72.34119], 
+            [18.566, -72.3369],    [18.56639, -72.33298], [18.567, -72.32356],   
+            [18.56488, -72.31755], [18.56435, -72.31478], [18.57418, -72.30523], 
+            [18.58016, -72.31175], [18.58125, -72.31154], [18.58394, -72.30193], 
+            [18.58792, -72.29446], [18.59264, -72.28978], [18.59517, -72.28601], 
+            [18.59769, -72.28532], [18.59716, -72.29222], [18.59826, -72.29043], 
+            [18.59923, -72.29562], [18.59915, -72.29811]
         ];
         L.polygon(soleilDefinitif, { color: '#00FFFF', fillColor: '#00FFFF', fillOpacity: 0.15, weight: 2 }).addTo(map);
 
-        // 🟠 3. TABARRE (DÉFINITIF)
+        // 🟠 3. TABARRE
         const tabarreDefinitif = [
             [18.57426, -72.3053], [18.57464, -72.30334], [18.57401, -72.30085], [18.57354, -72.29929],
             [18.57302, -72.29714], [18.57253, -72.29515], [18.57232, -72.29347], [18.57212, -72.2924],
@@ -105,3 +109,22 @@
             [18.58378, -72.24146], [18.57912, -72.2341], [18.57741, -72.23116], [18.58516, -72.22717],
             [18.59531, -72.2247], [18.60039, -72.22358], [18.60328, -72.22215], [18.61878, -72.22146],
             [18.63215, -72.24981], [18.64639, -72.26126], [18.64196, -72.27345], [18.65145, -72.28354],
+            [18.65972, -72.29143], [18.66151, -72.29302], [18.67324, -72.31446], [18.67556, -72.31819],
+            [18.66507, -72.31038], [18.63392, -72.32613], [18.61782, -72.32845], [18.61176, -72.32459],
+            [18.60956, -72.31939], [18.6094, -72.31596], [18.60781, -72.31647], [18.60643, -72.31639],
+            [18.60493, -72.31484], [18.6048, -72.3121], [18.60598, -72.30824], [18.60546, -72.30549],
+            [18.59996, -72.30296], [18.59923, -72.29742], [18.5994, -72.29579], [18.59846, -72.29055],
+            [18.5974, -72.28918], [18.59773, -72.28549], [18.59484, -72.28601], [18.5924, -72.28974],
+            [18.58788, -72.29446], [18.58365, -72.3018], [18.58138, -72.31158], [18.5802, -72.31175],
+            [18.57438, -72.30532]
+        ];
+        L.polygon(tabarreDefinitif, { color: '#FF8C00', fillColor: '#FF8C00', fillOpacity: 0.15, weight: 2 }).addTo(map);
+
+        // 🔴 4. DELMAS
+        const delmasEnCours = [];
+        if (delmasEnCours.length > 0) {
+            L.polygon(delmasEnCours, { color: '#FF0000', fillColor: '#FF0000', fillOpacity: 0.15, weight: 2 }).addTo(map);
+        }
+    </script>
+</body>
+</html>
