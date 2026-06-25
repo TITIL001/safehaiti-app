@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeHaiti Studio - Cartographie</title>
+    <title>SafeHaiti Studio - Delmas</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { margin: 0; padding: 0; background-color: #111; font-family: 'Segoe UI', sans-serif; color: #fff; display: flex; height: 100vh; overflow: hidden; }
-        #map { flex: 1; height: 100%; background: #111; }
+        #map { flex: 1; height: 100%; }
         #sidebar { width: 350px; background: #1a1a1a; padding: 20px; display: flex; flex-direction: column; box-shadow: -2px 0 10px rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; }
         h2 { font-size: 1.2rem; color: #00ff99; margin-top: 0; text-transform: uppercase; }
-        h3 { font-size: 1rem; color: #ff3b30; margin-top: 20px; text-transform: uppercase; }
         .legend-item { margin: 10px 0; display: flex; align-items: center; font-size: 0.9rem; }
         .color-box { width: 20px; height: 12px; margin-right: 10px; border-radius: 2px; }
-        textarea { width: 100%; height: 180px; background: #222; color: #00ff99; border: 1px solid #444; border-radius: 4px; font-family: monospace; font-size: 0.8rem; padding: 5px; resize: none; margin-top: 10px; }
-        .info-help { font-size: 0.8rem; color: #aaa; margin-top: 5px; line-height: 1.3; }
-        button { background: #ff3b30; color: white; border: none; padding: 8px; margin-top: 5px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #e03026; }
+        textarea { width: 100%; height: 250px; background: #2b2b2b; color: #00ff99; border: 1px solid #444; border-radius: 4px; padding: 10px; font-family: monospace; font-size: 0.8rem; resize: none; margin-top: 15px; }
+        button { background: #ff3366; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -25,42 +22,40 @@
 
     <div id="sidebar">
         <h2>SafeHaiti Communes</h2>
-        <hr style="border: 2px solid #444; margin-bottom: 15px;">
+        <hr style="border: 1px solid #444; margin-bottom: 15px;">
         
         <div class="legend-item">
             <div class="color-box" style="background: rgba(30, 58, 138, 0.4); border: 2px solid #1E3A8A;"></div>
-            <span>Croix-des-Bouquets (🔵 DÉFINITIF)</span>
+            <span>Croix-des-Bouquets (DÉFINITIF 🔵)</span>
         </div>
         <div class="legend-item">
-            <div class="color-box" style="background: rgba(0, 255, 255, 0.3); border: 2px solid #00FFFF;"></div>
-            <span>Cité Soleil (🌐 INTÉGRÉ)</span>
+            <div class="color-box" style="background: rgba(0, 255, 255, 0.4); border: 2px solid #00FFFF;"></div>
+            <span>Cité Soleil (DÉFINITIF 🌐)</span>
         </div>
         <div class="legend-item">
             <div class="color-box" style="background: rgba(255, 140, 0, 0.3); border: 2px solid #FF8C00;"></div>
-            <span>Tabarre (🟠 DÉFINITIF)</span>
+            <span>Tabarre (DÉFINITIF 🟠)</span>
         </div>
         <div class="legend-item">
-            <div class="color-box" style="background: rgba(255, 0, 0, 0.3); border: 2px solid #FF0000;"></div>
-            <span>Delmas / Orgs (🔴 TRACÉ EN COURS)</span>
+            <div class="color-box" style="background: transparent; border: 2px solid #00ff99;"></div>
+            <span>Tracé Delmas / Orgs (Vert 🟢)</span>
         </div>
 
-        <h3>Studio de Tracé</h3>
-        <p class="info-help">Clique simplement sur la carte pour placer les points de ta nouvelle zone. Les coordonnées s'ajouteront automatiquement ci-dessous :</p>
-        <textarea id="coordinates-output" placeholder="Clique sur la carte pour commencer à récolter les coordonnées..."></textarea>
-        <button onclick="clearTracedPoints()">Effacer le tracé actuel</button>
+        <button onclick="clearLastPoint()">Annuler dernier point</button>
+        <button onclick="clearAll()" style="background: #444;">Réinitialiser Tout</button>
+
+        <textarea id="output" placeholder="Clique sur la carte pour tracer Delmas. Les coordonnées vertes s'afficheront ici..." readonly></textarea>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialisation de la carte
         const map = L.map('map').setView([18.59, -72.31], 12);
 
-        // Fond de carte sombre
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // 🔵 1. CROIX-DES-BOUQUETS
+        // 🔵 1. CROIX-DES-BOUQUETS (DÉFINITIF)
         const croixDefinitif = [
             [18.68333, -72.32574], [18.69373, -72.31613], [18.69178, -72.3024], [18.7295, -72.2945],
             [18.71812, -72.23133], [18.70544, -72.19906], [18.66544, -72.17709], [18.63551, -72.17297],
@@ -77,7 +72,7 @@
         ];
         L.polygon(croixDefinitif, { color: '#1E3A8A', fillColor: '#1E3A8A', fillOpacity: 0.15, weight: 2 }).addTo(map);
 
-        // 🌐 2. CITÉ SOLEIL (MIS À JOUR)
+        // 🌐 2. CITÉ SOLEIL (DÉFINITIF)
         const soleilDefinitif = [
             [18.67707, -72.32162], [18.67677, -72.32355], [18.67666, -72.32486], [18.67658, -72.3255],
             [18.67647, -72.32577], [18.67633, -72.32572], [18.67624, -72.32551], [18.67638, -72.32519],
@@ -95,43 +90,58 @@
         ];
         L.polygon(soleilDefinitif, { color: '#00FFFF', fillColor: '#00FFFF', fillOpacity: 0.15, weight: 2 }).addTo(map);
 
-        // 🟠 3. TABARRE
+        // 🟠 3. TABARRE (DÉFINITIF)
         const tabarreDefinitif = [
             [18.57426, -72.3053], [18.57464, -72.30334], [18.57401, -72.30085], [18.57354, -72.29929],
             [18.57302, -72.29714], [18.57253, -72.29515], [18.57232, -72.29347], [18.57212, -72.2924],
             [18.57141, -72.29143], [18.57062, -72.29036], [18.5706, -72.28871], [18.57047, -72.28695],
+            [18.5702, -72.28617], [18.56982, -72.28564], [18.56905, -72.28481], [18.56803, -72.28397],
+            [18.56724, -72.2833], [18.56683, -72.28286], [18.5661, -72.28209], [18.56576, -72.28178],
+            [18.56529, -72.28139], [18.56504, -72.28114], [18.56439, -72.28046], [18.56342, -72.27882],
+            [18.5629, -72.27737], [18.56275, -72.27671], [18.56278, -72.27566], [18.56291, -72.27473],
             [18.57438, -72.30532]
         ];
         L.polygon(tabarreDefinitif, { color: '#FF8C00', fillColor: '#FF8C00', fillOpacity: 0.15, weight: 2 }).addTo(map);
 
-        // 🛠️ SYSTÈME INTERACTIF SÉCURISÉ DE CAPTURE DE COORDONNÉES
-        let userPoints = [];
-        let currentDrawLayer = L.polyline([], {color: '#FF0000', weight: 3}).addTo(map);
+        // 🟢 4. TRACÉ INTERACTIF DELMAS (Ligne continue Verte)
+        let activePoints = [];
+        let greenLine = L.polyline([], { color: '#00ff99', weight: 3 }).addTo(map);
+        let markers = [];
 
         map.on('click', function(e) {
-            const lat = e.latlng.lat.toFixed(5);
-            const lng = e.latlng.lng.toFixed(5);
+            const lat = parseFloat(e.latlng.lat.toFixed(5));
+            const lng = parseFloat(e.latlng.lng.toFixed(5));
+            activePoints.push([lat, lng]);
             
-            userPoints.push([parseFloat(lat), parseFloat(lng)]);
-            currentDrawLayer.setLatLngs(userPoints);
-
-            // Ajouter un petit point repère visuel temporaire
-            L.circleMarker(e.latlng, { radius: 4, color: '#FF0000', fillColor: '#FFF', fillOpacity: 1 }).addTo(map);
-
-            // Mettre à jour l'affichage texte
-            updateCoordinatesBox();
+            let marker = L.circleMarker([lat, lng], { radius: 4, color: '#00ff99', fillColor: '#fff', fillOpacity: 1 }).addTo(map);
+            markers.push(marker);
+            updateMapAndText();
         });
 
-        function updateCoordinatesBox() {
-            const formatted = userPoints.map(p => `[${p[0]}, ${p[1]}]`);
-            document.getElementById('coordinates-output').value = `[\n  ${formatted.join(',\n  ')}\n]`;
+        function updateMapAndText() {
+            greenLine.setLatLngs(activePoints);
+            let formattedText = "[\n";
+            activePoints.forEach((p, idx) => {
+                formattedText += `  [${p[0]}, ${p[1]}]${idx < activePoints.length - 1 ? ',' : ''}\n`;
+            });
+            formattedText += "]";
+            document.getElementById('output').value = formattedText;
         }
 
-        function clearTracedPoints() {
-            userPoints = [];
-            currentDrawLayer.setLatLngs([]);
-            document.getElementById('coordinates-output').value = '';
-            // Optionnel : recharger la page pour enlever les repères visuels cercles rapidement
+        function clearLastPoint() {
+            if (activePoints.length > 0) {
+                activePoints.pop();
+                let lastMarker = markers.pop();
+                if (lastMarker) map.removeLayer(lastMarker);
+                updateMapAndText();
+            }
+        }
+
+        function clearAll() {
+            activePoints = [];
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            updateMapAndText();
         }
     </script>
 </body>
