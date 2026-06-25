@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafeHaiti Studio - Cartographie</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
     <style>
         body { margin: 0; padding: 0; background-color: #111; font-family: 'Segoe UI', sans-serif; color: #fff; display: flex; height: 100vh; overflow: hidden; }
         #map { flex: 1; height: 100%; background: #111; }
         #sidebar { width: 350px; background: #1a1a1a; padding: 20px; display: flex; flex-direction: column; box-shadow: -2px 0 10px rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; }
         h2 { font-size: 1.2rem; color: #00ff99; margin-top: 0; text-transform: uppercase; }
+        h3 { font-size: 1rem; color: #ff3b30; margin-top: 20px; text-transform: uppercase; }
         .legend-item { margin: 10px 0; display: flex; align-items: center; font-size: 0.9rem; }
         .color-box { width: 20px; height: 12px; margin-right: 10px; border-radius: 2px; }
+        textarea { width: 100%; height: 150px; background: #222; color: #00ff99; border: 1px solid #444; border-radius: 4px; font-family: monospace; font-size: 0.8rem; padding: 5px; resize: none; margin-top: 10px; }
+        .info-help { font-size: 0.8rem; color: #aaa; margin-top: 5px; line-height: 1.3; }
     </style>
 </head>
 <body>
@@ -20,7 +24,7 @@
 
     <div id="sidebar">
         <h2>SafeHaiti Communes</h2>
-        <hr style="border: 4px solid #444; margin-bottom: 15px;">
+        <hr style="border: 2px solid #444; margin-bottom: 15px;">
         
         <div class="legend-item">
             <div class="color-box" style="background: rgba(30, 58, 138, 0.4); border: 2px solid #1E3A8A;"></div>
@@ -28,7 +32,7 @@
         </div>
         <div class="legend-item">
             <div class="color-box" style="background: rgba(0, 255, 255, 0.3); border: 2px solid #00FFFF;"></div>
-            <span>Cité Soleil (🌐 CORRIGÉ)</span>
+            <span>Cité Soleil (🌐 INTÉGRÉ)</span>
         </div>
         <div class="legend-item">
             <div class="color-box" style="background: rgba(255, 140, 0, 0.3); border: 2px solid #FF8C00;"></div>
@@ -36,16 +40,21 @@
         </div>
         <div class="legend-item">
             <div class="color-box" style="background: rgba(255, 0, 0, 0.3); border: 2px solid #FF0000;"></div>
-            <span>Delmas (🔴 EN COURS)</span>
+            <span>Delmas / Orgs (🔴 TRACÉ EN COURS)</span>
         </div>
+
+        <h3>Studio de Dessin</h3>
+        <p class="info-help">Utilise l'outil de polygone sur la carte pour dessiner Delmas ou les zones d'organisations. Copie ensuite les coordonnées générées ici :</p>
+        <textarea id="coordinates-output" readonly placeholder="Dessine un polygone pour voir les coordonnées s'afficher ici..."></textarea>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
     <script>
-        // Initialisation de la carte
-        const map = L.map('map').setView([18.59, -72.29], 12);
+        // Initialisation de la carte centrée sur la zone
+        const map = L.map('map').setView([18.59, -72.31], 12);
 
-        // Fond de carte Dark Matter
+        // Fond de carte sombre
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
@@ -67,16 +76,21 @@
         ];
         L.polygon(croixDefinitif, { color: '#1E3A8A', fillColor: '#1E3A8A', fillOpacity: 0.15, weight: 2 }).addTo(map);
 
-        // 🌐 2. CITÉ SOLEIL (CORRIGÉ ET RESTRUCTURÉ)
+        // 🌐 2. CITÉ SOLEIL (TES COORDONNÉES)
         const soleilDefinitif = [
-            [18.60493, -72.31484], [18.59996, -72.30296], [18.59905, -72.34604],
-            [18.56476, -72.3484],  [18.56366, -72.34855], [18.56289, -72.34119], 
-            [18.566, -72.3369],    [18.56639, -72.33298], [18.567, -72.32356],   
-            [18.56488, -72.31755], [18.56435, -72.31478], [18.57418, -72.30523], 
-            [18.58016, -72.31175], [18.58125, -72.31154], [18.58394, -72.30193], 
-            [18.58792, -72.29446], [18.59264, -72.28978], [18.59517, -72.28601], 
-            [18.59769, -72.28532], [18.59716, -72.29222], [18.59826, -72.29043], 
-            [18.59923, -72.29562], [18.59915, -72.29811]
+            [18.67707, -72.32162], [18.67677, -72.32355], [18.67666, -72.32486], [18.67658, -72.3255],
+            [18.67647, -72.32577], [18.67633, -72.32572], [18.67624, -72.32551], [18.67638, -72.32519],
+            [18.67642, -72.32459], [18.67617, -72.32414], [18.67619, -72.32401], [18.67629, -72.32415],
+            [18.67641, -72.3241],  [18.67673, -72.31197], [18.67676, -72.32179], [18.67623, -72.3214],
+            [18.67626, -72.32107], [18.67625, -72.32089], [18.67625, -72.3207],  [18.67611, -72.32049],
+            [18.67589, -72.32031], [18.67561, -72.32024], [18.67554, -72.32033], [18.67554, -72.32037],
+            [18.57418, -72.30523], [18.58016, -72.31175], [18.58125, -72.31154], [18.58394, -72.30193],
+            [18.58792, -72.29446], [18.59264, -72.28978], [18.59517, -72.28601], [18.59769, -72.28532],
+            [18.59716, -72.28922], [18.59826, -72.29043], [18.59923, -72.29562], [18.59915, -72.29811],
+            [18.59984, -72.30296], [18.60541, -72.30557], [18.60598, -72.30815], [18.60476, -72.31223],
+            [18.60472, -72.31463], [18.60631, -72.31635], [18.60794, -72.31647], [18.60936, -72.31583],
+            [18.60944, -72.31939], [18.61176, -72.32459], [18.61766, -72.32832], [18.63364, -72.32613],
+            [18.66483, -72.31012], [18.67544, -72.31819], [18.67727, -72.32171]
         ];
         L.polygon(soleilDefinitif, { color: '#00FFFF', fillColor: '#00FFFF', fillOpacity: 0.15, weight: 2 }).addTo(map);
 
@@ -87,44 +101,4 @@
             [18.57141, -72.29143], [18.57062, -72.29036], [18.5706, -72.28871], [18.57047, -72.28695],
             [18.5702, -72.28617], [18.56982, -72.28564], [18.56905, -72.28481], [18.56803, -72.28397],
             [18.56724, -72.2833], [18.56683, -72.28286], [18.5661, -72.28209], [18.56576, -72.28178],
-            [18.56529, -72.28139], [18.56504, -72.28114], [18.56439, -72.28046], [18.56342, -72.27882],
-            [18.5629, -72.27737], [18.56275, -72.27671], [18.56278, -72.27566], [18.56291, -72.27473],
-            [18.56216, -72.27309], [18.56091, -72.27094], [18.56094, -72.27034], [18.56011, -72.2694],
-            [18.55876, -72.26785], [18.55806, -72.26667], [18.55752, -72.26597], [18.55689, -72.2647],
-            [18.55623, -72.26313], [18.55589, -72.26234], [18.55522, -72.26152], [18.55508, -72.26112],
-            [18.55467, -72.26161], [18.5543, -72.26177], [18.55414, -72.26208], [18.55391, -72.26213],
-            [18.5536, -72.262], [18.55316, -72.26233], [18.55228, -72.26228], [18.55201, -72.26254],
-            [18.55143, -72.26274], [18.55115, -72.26304], [18.55086, -72.26232], [18.55005, -72.26072],
-            [18.54958, -72.25981], [18.54927, -72.25816], [18.54668, -72.25747], [18.54594, -72.25779],
-            [18.54472, -72.25667], [18.54358, -72.25496], [18.5424, -72.25369], [18.54204, -72.253],
-            [18.54069, -72.25069], [18.5404, -72.24992], [18.53972, -72.24916], [18.53915, -72.24826],
-            [18.5386, -72.24787], [18.53831, -72.24732], [18.53803, -72.24678], [18.53737, -72.24628],
-            [18.53651, -72.24474], [18.53321, -72.24693], [18.53201, -72.24822], [18.53093, -72.24978],
-            [18.52965, -72.24852], [18.52875, -72.24581], [18.52847, -72.24431], [18.52865, -72.24348],
-            [18.52891, -72.24333], [18.53097, -72.24116], [18.52786, -72.23822], [18.52767, -72.23622],
-            [18.52901, -72.23451], [18.53083, -72.23268], [18.53201, -72.23212], [18.5329, -72.23015],
-            [18.53343, -72.22934], [18.53408, -72.2282], [18.53473, -72.2271], [18.53516, -72.22607],
-            [18.53612, -72.22236], [18.5378, -72.2229], [18.54991, -72.2264], [18.56596, -72.23026],
-            [18.56919, -72.23105], [18.56679, -72.235], [18.58203, -72.24837], [18.58557, -72.24751],
-            [18.58378, -72.24146], [18.57912, -72.2341], [18.57741, -72.23116], [18.58516, -72.22717],
-            [18.59531, -72.2247], [18.60039, -72.22358], [18.60328, -72.22215], [18.61878, -72.22146],
-            [18.63215, -72.24981], [18.64639, -72.26126], [18.64196, -72.27345], [18.65145, -72.28354],
-            [18.65972, -72.29143], [18.66151, -72.29302], [18.67324, -72.31446], [18.67556, -72.31819],
-            [18.66507, -72.31038], [18.63392, -72.32613], [18.61782, -72.32845], [18.61176, -72.32459],
-            [18.60956, -72.31939], [18.6094, -72.31596], [18.60781, -72.31647], [18.60643, -72.31639],
-            [18.60493, -72.31484], [18.6048, -72.3121], [18.60598, -72.30824], [18.60546, -72.30549],
-            [18.59996, -72.30296], [18.59923, -72.29742], [18.5994, -72.29579], [18.59846, -72.29055],
-            [18.5974, -72.28918], [18.59773, -72.28549], [18.59484, -72.28601], [18.5924, -72.28974],
-            [18.58788, -72.29446], [18.58365, -72.3018], [18.58138, -72.31158], [18.5802, -72.31175],
-            [18.57438, -72.30532]
-        ];
-        L.polygon(tabarreDefinitif, { color: '#FF8C00', fillColor: '#FF8C00', fillOpacity: 0.15, weight: 2 }).addTo(map);
-
-        // 🔴 4. DELMAS
-        const delmasEnCours = [];
-        if (delmasEnCours.length > 0) {
-            L.polygon(delmasEnCours, { color: '#FF0000', fillColor: '#FF0000', fillOpacity: 0.15, weight: 2 }).addTo(map);
-        }
-    </script>
-</body>
-</html>
+            [18.56529, -72.28139], [18.56504, -72.28114],
